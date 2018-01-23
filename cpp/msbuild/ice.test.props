@@ -32,16 +32,16 @@
   </ItemDefinitionGroup>
 
   <PropertyGroup>
-    <IceBuilderOutputDir>$(Platform)\$(Configuration)\</IceBuilderOutputDir>
+    <SliceCompileOutputDir>$(Platform)\$(Configuration)</SliceCompileOutputDir>
     <OutDir>$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(Platform)\$(Configuration);$(IceSrcRootDir)\test\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+        <AdditionalIncludeDirectories>$(Platform)\$(Configuration);$(IceSrcRootDir)\test\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(IceSrcRootDir)\test\Common\msbuild\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+        <AdditionalLibraryDirectories>$(IceSrcRootDir)\test\Common\msbuild\$(Platform)\$(Configuration);xxx;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
 

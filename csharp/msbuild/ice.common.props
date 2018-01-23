@@ -51,4 +51,40 @@
   <PropertyGroup Condition=" '$(OutputType)' == 'Exe' ">
       <OutputPath>$(ExeDirectory)</OutputPath>
   </PropertyGroup>
+
+  <!-- Import Ice version settings -->
+  <Import Project="$(IceHome)\config\icebuilder.props"/>
+
+  <!-- Guess the platform and configuration used with this build -->
+  <PropertyGroup Condition="Exists('$(IceHome)\cpp\bin\$(Platform)\$(Configuration)\slice2cs.exe')">
+      <IceToolsPath>$(IceHome)\cpp\bin\$(Platform)\$(Configuration)</IceToolsPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="Exists('$(IceHome)\cpp\bin\x64\$(Configuration)\slice2cs.exe') And '$(IceToolsPath)' == ''">
+      <IceToolsPath>$(IceHome)\cpp\bin\x64\$(Configuration)</IceToolsPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="Exists('$(IceHome)\cpp\bin\Win32\$(Configuration)\slice2cs.exe')  And '$(IceToolsPath)' == ''">
+      <IceToolsPath>$(IceHome)\cpp\bin\Win32\$(Configuration)</IceToolsPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="Exists('$(IceHome)\cpp\bin\x64\Release\slice2cs.exe')  And '$(IceToolsPath)' == ''">
+      <IceToolsPath>$(IceHome)\cpp\bin\x64\Release</IceToolsPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="Exists('$(IceHome)\cpp\bin\x64\Debug\slice2cs.exe')  And '$(IceToolsPath)' == ''">
+      <IceToolsPath>$(IceHome)\cpp\bin\x64\Debug</IceToolsPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="Exists('$(IceHome)\cpp\bin\Win32\Release\slice2cs.exe')  And '$(IceToolsPath)' == ''">
+      <IceToolsPath>$(IceHome)\cpp\bin\Win32\Release</IceToolsPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="Exists('$(IceHome)\cpp\bin\Win32\Debug\slice2cs.exe')  And '$(IceToolsPath)' == ''">
+      <IceToolsPath>$(IceHome)\cpp\bin\Win32\Debug</IceToolsPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+      <IceAssembliesDir>$(IceHome)\csharp\Assemblies</IceAssembliesDir>
+  </PropertyGroup>
 </Project>

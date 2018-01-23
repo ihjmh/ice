@@ -13,11 +13,42 @@
     <DefaultPlatformToolset Condition="'$(VisualStudioVersion)' == '10.0' And  '$(DefaultPlatformToolset)' == ''">v100</DefaultPlatformToolset>
   </PropertyGroup>
 
-  <!--
-      Import version settings required for library targets.
-  -->
+  <!-- Import version settings required for library targets. -->
   <Import Project="$(IceHome)\config\icebuilder.props"
           Condition="Exists('$(IceHome)\config\icebuilder.props')" />
+
+  <!-- Guess the Configuration for C++ builds -->
+  <PropertyGroup Condition="'$(UseDebugLibraries)' == 'true'">
+      <IceConfiguration>Debug</IceConfiguration>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(UseDebugLibraries)' != 'true'">
+      <IceConfiguration>Release</IceConfiguration>
+  </PropertyGroup>
+
+  <!-- Guess the Platform for C++ builds -->
+  <PropertyGroup Condition="'$(Platform)'=='Win32'">
+      <IcePlatform>Win32</IcePlatform>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+      <IcePlatform>x64</IcePlatform>
+  </PropertyGroup>
+
+  <!-- When building UWP ARM we use the x64 Slice compilers -->
+  <PropertyGroup Condition="'$(Platform)'=='ARM'">
+      <IcePlatform>Win32</IcePlatform>
+  </PropertyGroup>
+
+  <!-- C++98 is the default mapping -->
+  <PropertyGroup Condition="'$(IceCppMapping)' == ''">
+      <IceCppMapping>cpp98</IceCppMapping>
+  </PropertyGroup>
+
+  <PropertyGroup>
+      <Path>$(IceHome)\cpp\bin\$(Platform)\$(IceConfiguration);$(Path)</Path>
+      <IceToolsPath>$(IceHome)\cpp\bin\$(IcePlatform)\$(IceConfiguration)</IceToolsPath>
+  </PropertyGroup>
 
   <!--
       Common properties
@@ -25,7 +56,7 @@
   <PropertyGroup>
     <IceSrcRootDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)\..'))</IceSrcRootDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <IceBuilderOutputDir Condition="'$(IceBuilderOutputDir)' == ''">$(Platform)\$(Configuration)</IceBuilderOutputDir>
+    <SliceCompileOutputDir Condition="'$(SliceCompileOutputDir)' == ''">$(Platform)\$(Configuration)</SliceCompileOutputDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
 
@@ -87,6 +118,17 @@
     </Link>
   </ItemDefinitionGroup>
 
+  <!-- C++ include and library search paths. -->
+  <ItemDefinitionGroup>
+      <ClCompile>
+          <AdditionalIncludeDirectories>$(IceHome)\cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+          <AdditionalIncludeDirectories>$(IceHome)\cpp\include\generated\$(IceCppMapping)\$(Platform)\$(IceConfiguration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      </ClCompile>
+      <Link>
+          <AdditionalLibraryDirectories>$(IceHome)\cpp\lib\$(Platform)\$(IceConfiguration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      </Link>
+  </ItemDefinitionGroup>
+
   <!--
       Common properties set for all debug builds and platforms.
   -->
@@ -142,12 +184,12 @@
   -->
   <ItemDefinitionGroup Condition="'$(IceBuildingSrc)' == 'yes'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(IceSrcRootDir)\include\generated\$(IceCppMapping)\$(Platform)\$(IceConfiguration);
-                                    $(IceSrcRootDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions Condition="'$(IceLanguageMapping)' == 'cpp'">ICE_BUILDING_SRC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+        <AdditionalIncludeDirectories>$(IceSrcRootDir)\include\generated\$(IceCppMapping)\$(Platform)\$(IceConfiguration);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+        <AdditionalIncludeDirectories>$(IceSrcRootDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+        <PreprocessorDefinitions Condition="'$(IceLanguageMapping)' == 'cpp'">ICE_BUILDING_SRC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(IceSrcRootDir)\lib\$(Platform)\$(IceConfiguration)</AdditionalLibraryDirectories>
+        <AdditionalLibraryDirectories>$(IceSrcRootDir)\lib\$(Platform)\$(IceConfiguration)</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(IceSrcRootDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
